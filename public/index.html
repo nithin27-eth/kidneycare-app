@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KidneyCare - Stone Prevention Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <h1>💧 KidneyCare</h1>
+                <p class="subtitle">Post-Surgery Stone Prevention</p>
+            </div>
+            <div class="header-right">
+                <span class="date-display" id="currentDate"></span>
+                <button class="btn-icon" id="settingsBtn" title="Settings">⚙️</button>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="dashboard">📊 Dashboard</button>
+            <button class="tab-btn" data-tab="food">🍽️ Food Log</button>
+            <button class="tab-btn" data-tab="water">💧 Water</button>
+            <button class="tab-btn" data-tab="guide">📋 Food Guide</button>
+            <button class="tab-btn" data-tab="progress">📈 Progress</button>
+        </nav>
+
+        <!-- DASHBOARD TAB -->
+        <section class="tab-content active" id="dashboard">
+            <div class="dashboard-grid">
+                <!-- Water Status Card -->
+                <div class="card water-status-card">
+                    <h3>💧 Today's Water Intake</h3>
+                    <div class="water-circle-container">
+                        <div class="water-circle" id="waterCircle">
+                            <svg viewBox="0 0 200 200">
+                                <circle cx="100" cy="100" r="90" class="circle-bg"/>
+                                <circle cx="100" cy="100" r="90" class="circle-progress" id="waterProgress"/>
+                            </svg>
+                            <div class="water-circle-text">
+                                <span class="water-amount" id="dashWaterAmount">0</span>
+                                <span class="water-unit">/ <span id="dashWaterTarget">3000</span> ml</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-quick-water" id="quickAddWater">+ Add 250ml Glass</button>
+                </div>
+
+                <!-- Today's Risk Score -->
+                <div class="card risk-card">
+                    <h3>⚠️ Today's Risk Score</h3>
+                    <div class="risk-meter">
+                        <div class="risk-bar" id="riskBar">
+                            <div class="risk-fill" id="riskFill"></div>
+                        </div>
+                        <div class="risk-labels">
+                            <span>Low</span>
+                            <span>Medium</span>
+                            <span>High</span>
+                        </div>
+                    </div>
+                    <p class="risk-text" id="riskText">Log your food to see risk analysis</p>
+                </div>
+
+                <!-- Food Summary -->
+                <div class="card food-summary-card">
+                    <h3>🍽️ Today's Food Summary</h3>
+                    <div id="dashFoodSummary" class="dash-food-summary">
+                        <p class="empty-state">No food logged today. Start tracking!</p>
+                    </div>
+                </div>
+
+                <!-- Quick Tips -->
+                <div class="card tips-card">
+                    <h3>💡 Daily Tip</h3>
+                    <p id="dailyTip" class="daily-tip"></p>
+                </div>
+
+                <!-- Alerts -->
+                <div class="card alerts-card" id="alertsCard" style="display:none;">
+                    <h3>🚨 Alerts</h3>
+                    <div id="alertsList"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOD LOG TAB -->
+        <section class="tab-content" id="food">
+            <div class="card">
+                <h3>🔍 Search and Log Food</h3>
+                <div class="search-container">
+                    <input type="text" id="foodSearch" placeholder="Search food (e.g., spinach, chicken, banana...)" autocomplete="off">
+                    <div class="search-results" id="searchResults"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📝 Today's Food Log</h3>
+                <div class="food-log-filters">
+                    <button class="filter-btn active" data-meal="all">All</button>
+                    <button class="filter-btn" data-meal="breakfast">🌅 Breakfast</button>
+                    <button class="filter-btn" data-meal="lunch">☀️ Lunch</button>
+                    <button class="filter-btn" data-meal="dinner">🌙 Dinner</button>
+                    <button class="filter-btn" data-meal="snack">🍪 Snack</button>
+                </div>
+                <div id="foodLogList" class="food-log-list">
+                    <p class="empty-state">No food logged yet today</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📊 Nutrient Impact Summary</h3>
+                <div class="nutrient-bars">
+                    <div class="nutrient-item">
+                        <label>Oxalate Intake</label>
+                        <div class="progress-bar">
+                            <div class="progress-fill oxalate-fill" id="oxalateFill"></div>
+                        </div>
+                        <span id="oxalateValue">0 mg</span>
+                        <span class="nutrient-limit">/ 50 mg (recommended limit)</span>
+                    </div>
+                    <div class="nutrient-item">
+                        <label>Sodium Intake</label>
+                        <div class="progress-bar">
+                            <div class="progress-fill sodium-fill" id="sodiumFill"></div>
+                        </div>
+                        <span id="sodiumValue">0 mg</span>
+                        <span class="nutrient-limit">/ 2300 mg (recommended limit)</span>
+                    </div>
+                    <div class="nutrient-item">
+                        <label>Calcium Intake</label>
+                        <div class="progress-bar">
+                            <div class="progress-fill calcium-fill" id="calciumFill"></div>
+                        </div>
+                        <span id="calciumValue">0 mg</span>
+                        <span class="nutrient-limit">/ 1000 mg (recommended)</span>
+                    </div>
+                    <div class="nutrient-item">
+                        <label>Protein Intake</label>
+                        <div class="progress-bar">
+                            <div class="progress-fill protein-fill" id="proteinFill"></div>
+                        </div>
+                        <span id="proteinValue">0 g</span>
+                        <span class="nutrient-limit">/ 56 g (moderate)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- WATER TRACKER TAB -->
+        <section class="tab-content" id="water">
+            <div class="card">
+                <h3>💧 Water Intake Tracker</h3>
+                <div class="water-tracker">
+                    <div class="water-bottle-visual">
+                        <div class="bottle">
+                            <div class="bottle-fill" id="bottleFill"></div>
+                            <div class="bottle-markers">
+                                <span>3L</span>
+                                <span>2L</span>
+                                <span>1L</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="water-controls">
+                        <p class="water-total">Total: <strong id="waterTotal">0 ml</strong></p>
+                        <p class="water-target-text">Target: <strong id="waterTargetDisplay">3000 ml</strong></p>
+                        <p class="water-adjusted-note" id="waterAdjustedNote"></p>
+                        <div class="water-buttons">
+                            <button class="btn btn-water" data-amount="100">🥤 100ml</button>
+                            <button class="btn btn-water" data-amount="200">🥤 200ml</button>
+                            <button class="btn btn-water" data-amount="250">🥛 250ml</button>
+                            <button class="btn btn-water" data-amount="500">🍶 500ml</button>
+                            <button class="btn btn-water" data-amount="750">🧴 750ml</button>
+                        </div>
+                        <div class="custom-water">
+                            <input type="number" id="customWaterAmount" placeholder="Custom amount (ml)" min="1">
+                            <button class="btn btn-primary" id="addCustomWater">Add</button>
+                        </div>
+                        <button class="btn btn-danger" id="undoWater">↩️ Undo Last</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📋 Water Log Today</h3>
+                <div id="waterLog" class="water-log"></div>
+            </div>
+
+            <div class="card">
+                <h3>⏰ Water Reminders</h3>
+                <div class="reminder-settings">
+                    <div class="reminder-toggle">
+                        <label>Enable Notifications</label>
+                        <label class="switch">
+                            <input type="checkbox" id="enableReminders">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="reminder-interval">
+                        <label>Remind every:</label>
+                        <select id="reminderInterval">
+                            <option value="30">30 minutes</option>
+                            <option value="45">45 minutes</option>
+                            <option value="60" selected>1 hour</option>
+                            <option value="90">1.5 hours</option>
+                            <option value="120">2 hours</option>
+                        </select>
+                    </div>
+                    <div class="reminder-hours">
+                        <label>Active hours:</label>
+                        <div class="time-range">
+                            <input type="time" id="reminderStart" value="07:00">
+                            <span>to</span>
+                            <input type="time" id="reminderEnd" value="22:00">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOD GUIDE TAB -->
+        <section class="tab-content" id="guide">
+            <div class="card">
+                <h3>📋 Kidney Stone Food Guide</h3>
+                <p class="guide-subtitle">Based on your 6mm calcium oxalate stone history</p>
+                <div class="guide-filters">
+                    <button class="guide-filter-btn active" data-filter="all">All Foods</button>
+                    <button class="guide-filter-btn safe" data-filter="safe">✅ Safe</button>
+                    <button class="guide-filter-btn moderate" data-filter="moderate">⚠️ Moderate</button>
+                    <button class="guide-filter-btn avoid" data-filter="avoid">❌ Avoid</button>
+                </div>
+                <div class="guide-category-filters">
+                    <button class="cat-filter active" data-category="all">All</button>
+                    <button class="cat-filter" data-category="vegetable">🥬 Vegetables</button>
+                    <button class="cat-filter" data-category="fruit">🍎 Fruits</button>
+                    <button class="cat-filter" data-category="protein">🥩 Protein</button>
+                    <button class="cat-filter" data-category="grain">🌾 Grains</button>
+                    <button class="cat-filter" data-category="dairy">🥛 Dairy</button>
+                    <button class="cat-filter" data-category="beverage">🥤 Beverages</button>
+                    <button class="cat-filter" data-category="nut">🥜 Nuts</button>
+                    <button class="cat-filter" data-category="spice">🧂 Spices</button>
+                    <button class="cat-filter" data-category="indian">🍛 Indian Foods</button>
+                </div>
+                <div id="foodGuideList" class="food-guide-list"></div>
+            </div>
+        </section>
+
+        <!-- PROGRESS TAB -->
+        <section class="tab-content" id="progress">
+            <div class="card">
+                <h3>📈 Weekly Progress</h3>
+                <div class="progress-chart">
+                    <div class="chart-container" id="weeklyChart"></div>
+                </div>
+            </div>
+            <div class="card">
+                <h3>📊 Statistics</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number" id="streakDays">0</span>
+                        <span class="stat-label">Day Streak</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="avgWater">0</span>
+                        <span class="stat-label">Avg Water (ml)</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="avgRisk">-</span>
+                        <span class="stat-label">Avg Risk Level</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalDaysTracked">0</span>
+                        <span class="stat-label">Days Tracked</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <h3>📅 History</h3>
+                <div id="historyList" class="history-list"></div>
+            </div>
+            <div class="card">
+                <h3>💾 Data Management</h3>
+                <div class="data-management">
+                    <button class="btn btn-primary" id="exportData">📤 Export Data</button>
+                    <button class="btn btn-danger" id="clearAllData">🗑️ Clear All Data</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Food Detail Modal -->
+        <div class="modal" id="foodDetailModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalFoodName"></h3>
+                    <button class="modal-close" id="closeModal">&times;</button>
+                </div>
+                <div class="modal-body" id="modalBody"></div>
+                <div class="modal-footer">
+                    <select id="mealSelect">
+                        <option value="breakfast">🌅 Breakfast</option>
+                        <option value="lunch">☀️ Lunch</option>
+                        <option value="dinner">🌙 Dinner</option>
+                        <option value="snack">🍪 Snack</option>
+                    </select>
+                    <div class="serving-input">
+                        <label>Servings:</label>
+                        <input type="number" id="servingAmount" value="1" min="0.5" max="10" step="0.5">
+                    </div>
+                    <button class="btn btn-primary" id="addToLog">Add to Log</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div class="modal" id="settingsModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>⚙️ Settings</h3>
+                    <button class="modal-close" id="closeSettings">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="setting-item">
+                        <label>Stone Type:</label>
+                        <select id="stoneType">
+                            <option value="calcium_oxalate" selected>Calcium Oxalate</option>
+                            <option value="calcium_phosphate">Calcium Phosphate</option>
+                            <option value="uric_acid">Uric Acid</option>
+                            <option value="struvite">Struvite</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label>Base Water Target (ml):</label>
+                        <input type="number" id="baseWaterTarget" value="3000" min="2000" max="5000" step="100">
+                    </div>
+                    <div class="setting-item">
+                        <label>Your Weight (kg):</label>
+                        <input type="number" id="userWeight" value="70" min="30" max="200">
+                    </div>
+                    <button class="btn btn-primary" id="saveSettings">Save Settings</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <script src="data/foodDatabase.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
