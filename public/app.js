@@ -1102,3 +1102,20 @@ function updateAll() {
     updateWaterTracker();
     updateProgress();
 }
+// Global function for mobile button click
+function startAnalysis() {
+    console.log('startAnalysis called');
+    showToast('Starting analysis...');
+    var fileInput = document.getElementById('foodImageInput');
+    if (!fileInput) {
+        showToast('Error: No file input found');
+        return;
+    }
+    var file = fileInput.files && fileInput.files[0];
+    if (!file) {
+        showToast('Please select a photo first!');
+        return;
+    }
+    console.log('File found:', file.name, file.size);
+    analyzeFood(file);
+}
