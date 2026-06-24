@@ -1068,10 +1068,19 @@ function initPhotoAnalyzer() {
     const photoUploadArea = document.getElementById('photoUploadArea');
 
     // Click upload button
-    uploadBtn.addEventListener('click', function() {
+    uploadBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
         fileInput.click();
     });
 
+    // Click upload area - but not if clicking button
+    photoUploadArea.addEventListener('click', function(e) {
+        if (e.target !== uploadBtn) {
+            e.preventDefault();
+            fileInput.click();
+        }
+    });
     // Click upload area
     photoUploadArea.addEventListener('click', function() {
         fileInput.click();
