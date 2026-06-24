@@ -1086,20 +1086,33 @@ function initPhotoAnalyzer() {
         fileInput.click();
     });
 
-    // File selected
+        // File selected
     fileInput.addEventListener('change', function(e) {
+        console.log('File input changed');
         const file = e.target.files[0];
+        console.log('File:', file);
         if (file) {
+            console.log('File name:', file.name);
+            console.log('File size:', file.size);
+            console.log('File type:', file.type);
             const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('previewImage').src = e.target.result;
+            reader.onload = function(evt) {
+                console.log('FileReader loaded');
+                document.getElementById('previewImage').src = evt.target.result;
                 document.getElementById('photoPreview').style.display = 'block';
                 document.getElementById('photoUploadArea').style.display = 'none';
                 document.getElementById('analyzeBtn').style.display = 'block';
                 document.getElementById('analysisResults').style.display = 'none';
                 document.getElementById('addAnalyzedFood').style.display = 'none';
+                showToast('Photo selected! Click Analyze to check food safety.');
+            };
+            reader.onerror = function(err) {
+                console.error('FileReader error:', err);
+                showToast('Error reading file. Please try again.');
             };
             reader.readAsDataURL(file);
+        } else {
+            console.log('No file selected');
         }
     });
 
