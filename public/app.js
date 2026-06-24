@@ -758,17 +758,27 @@ async function analyzeFood(file) {
         var data = await response.json();
         console.log('Response:', data);
 
-        if (data.success) {
+                if (data.success) {
             analyzedFoodData = data.analysis;
             displayAnalysisResults(data.analysis);
         } else {
             showToast('Error: ' + (data.error || 'Unknown error'));
             document.getElementById('analyzeBtn').style.display = 'block';
+            document.getElementById('analysisResults').style.display = 'block';
+            document.getElementById('analysisContent').innerHTML = 
+                '<div style="padding:16px;background:#FFEBEE;border-radius:8px;color:#F44336;">' +
+                '<strong>Server Error:</strong><br>' + 
+                (data.error || 'Unknown') + '<br>' +
+                (data.details || '') + '</div>';
         }
-    } catch (error) {
+        } catch (error) {
         console.error('Fetch error:', error);
-        showToast('Failed to analyze. Check connection.');
+        showToast('Error: ' + error.message);
         document.getElementById('analyzeBtn').style.display = 'block';
+        document.getElementById('analysisResults').style.display = 'block';
+        document.getElementById('analysisContent').innerHTML = 
+            '<div style="padding:16px;background:#FFEBEE;border-radius:8px;color:#F44336;">' +
+            '<strong>Error Details:</strong><br>' + error.message + '</div>';
     }
 
     document.getElementById('analyzingLoader').style.display = 'none';
