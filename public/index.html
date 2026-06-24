@@ -220,60 +220,101 @@
         </section>
 
         <!-- PHOTO ANALYZER -->
-        <section class="tab-content" id="photo">
-            <div class="card">
-                <h3>📸 Food Photo Analyzer</h3>
-                <p class="guide-subtitle">Upload a food photo to get instant kidney stone safety analysis!</p>
+<section class="tab-content" id="photo">
+    <div class="card">
+        <h3>📸 Food Photo Analyzer</h3>
+        <p class="guide-subtitle">Upload a food photo to get instant kidney stone safety analysis!</p>
 
-                <div class="photo-upload-area" id="photoUploadArea">
-                    <div class="upload-icon">📷</div>
-                    <p>Click here to select a photo</p>
-                    <p style="font-size:0.75rem;color:#546E7A;">Supports JPG, PNG, WEBP</p>
-                </div>
+        <!-- File Input Always Visible -->
+        <div style="margin-bottom:16px;">
+            <label style="display:block;font-weight:600;margin-bottom:8px;">
+                Step 1: Select a Food Photo
+            </label>
+            <input type="file" 
+                id="foodImageInput" 
+                accept="image/*"
+                style="display:block;width:100%;padding:14px;
+                border:2px solid #2196F3;border-radius:10px;
+                font-family:Poppins,sans-serif;background:#E3F2FD;
+                cursor:pointer;font-size:1rem;">
+        </div>
 
-                <input type="file" 
-                    id="foodImageInput" 
-                    accept="image/*"
-                    style="display:block;width:100%;padding:12px;margin-top:12px;border:2px solid #2196F3;border-radius:10px;font-family:Poppins,sans-serif;background:#E3F2FD;cursor:pointer;">
+        <!-- Preview -->
+        <div id="photoPreview" style="display:none;margin-bottom:16px;">
+            <label style="display:block;font-weight:600;margin-bottom:8px;">
+                Step 2: Preview
+            </label>
+            <img id="previewImage" src="" alt="Food Preview" 
+                style="width:100%;max-height:300px;
+                object-fit:cover;border-radius:12px;
+                display:block;margin-bottom:8px;">
+            <button onclick="removePhotoFn()"
+                style="padding:10px 20px;background:#FFEBEE;
+                color:#F44336;border:1px solid #F44336;
+                border-radius:10px;cursor:pointer;
+                font-family:Poppins,sans-serif;">
+                Remove Photo
+            </button>
+        </div>
 
-                <div id="photoPreview" style="display:none;margin-top:16px;text-align:center;">
-                    <img id="previewImage" src="" alt="Food Preview" 
-                         style="width:100%;max-height:300px;object-fit:cover;border-radius:12px;margin-bottom:12px;">
-                    <button class="btn btn-danger" id="removePhoto">Remove Photo</button>
-                </div>
+        <!-- Analyze Button Always Visible -->
+        <div style="margin-bottom:16px;">
+            <label style="display:block;font-weight:600;margin-bottom:8px;">
+                Step 3: Analyze
+            </label>
+            <button onclick="startAnalysis()"
+                style="display:block;width:100%;padding:18px;
+                background:#1565C0;color:white;border:none;
+                border-radius:10px;font-size:1.1rem;
+                font-family:Poppins,sans-serif;
+                cursor:pointer;font-weight:600;">
+                🔍 Analyze This Food
+            </button>
+        </div>
 
-                <button class="btn btn-primary" id="analyzeBtn" 
-        onclick="startAnalysis()"
-        style="display:none;width:100%;padding:16px;margin-top:16px;font-size:1rem;">
-    🔍 Analyze This Food
-</button>
+        <!-- Loader -->
+        <div id="analyzingLoader" 
+            style="display:none;text-align:center;padding:30px;">
+            <div class="loader-spinner"></div>
+            <p style="margin-top:16px;font-weight:600;">
+                AI is analyzing your food...
+            </p>
+            <p style="font-size:0.8rem;color:#546E7A;">
+                Checking oxalate levels and kidney safety...
+            </p>
+        </div>
+    </div>
 
-                <div id="analyzingLoader" style="display:none;text-align:center;padding:30px;">
-                    <div class="loader-spinner"></div>
-                    <p>AI is analyzing your food...</p>
-                    <p style="font-size:0.8rem;color:#546E7A;">Checking oxalate levels and kidney safety...</p>
-                </div>
-            </div>
+    <!-- Results -->
+    <div class="card" id="analysisResults" style="display:none">
+        <h3>🔬 Analysis Results</h3>
+        <div id="analysisContent"></div>
+    </div>
 
-            <div class="card" id="analysisResults" style="display:none">
-                <h3>🔬 Analysis Results</h3>
-                <div id="analysisContent"></div>
-            </div>
-
-            <div class="card" id="addAnalyzedFood" style="display:none">
-                <h3>📝 Add to Today's Log</h3>
-                <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:12px;">
-                    <select id="photoMealSelect" 
-                            style="padding:10px;border:2px solid #E0E6ED;border-radius:10px;font-family:Poppins,sans-serif;">
-                        <option value="breakfast">Breakfast</option>
-                        <option value="lunch">Lunch</option>
-                        <option value="dinner">Dinner</option>
-                        <option value="snack">Snack</option>
-                    </select>
-                    <button class="btn btn-primary" id="addAnalyzedToLog">Add to Log</button>
-                </div>
-            </div>
-        </section>
+    <!-- Add to Log -->
+    <div class="card" id="addAnalyzedFood" style="display:none">
+        <h3>📝 Add to Today's Log</h3>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;
+            align-items:center;margin-top:12px;">
+            <select id="photoMealSelect" 
+                style="padding:12px;border:2px solid #E0E6ED;
+                border-radius:10px;font-family:Poppins,sans-serif;
+                font-size:0.9rem;">
+                <option value="breakfast">Breakfast</option>
+                <option value="lunch">Lunch</option>
+                <option value="dinner">Dinner</option>
+                <option value="snack">Snack</option>
+            </select>
+            <button onclick="addAnalyzedFoodToLog()"
+                style="padding:12px 24px;background:#2196F3;
+                color:white;border:none;border-radius:10px;
+                font-family:Poppins,sans-serif;font-size:0.9rem;
+                cursor:pointer;font-weight:600;">
+                Add to Log
+            </button>
+        </div>
+    </div>
+</section>
 
         <!-- FOOD GUIDE -->
         <section class="tab-content" id="guide">
