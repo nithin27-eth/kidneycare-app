@@ -7,36 +7,35 @@ const Groq = require('groq-sdk');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Groq AI Setup
 const groq = new Groq({
     apiKey: process.env.GROQ_API_KEY
 });
 
-// Multer Setup
 const upload = multer({
     storage: multer.memoryStorage(),
-    limits: { fileSize: 10 * 1024 * 1024 }
+    limits: { fileSize: 20 * 1024 * 1024 }
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
-// Food Photo Analysis Route
 app.post('/analyze-food', upload.single('foodImage'), async function(req, res) {
     try {
         if (!req.file) {
-            return res.status(400).json({ error: 'No image uploaded' });
+            return res.status(400).json({ 
+                success: false,
+                error: 'No image uploaded' 
+            });
         }
 
         const imageBase64 = req.file.buffer.toString('base64');
         const mimeType = req.file.mimetype;
 
-        console.log('Image received:', mimeType);
+        console.log('Image received type:', mimeType);
         console.log('Image size:', req.file.size);
 
         const prompt = `You are a kidney stone prevention diet expert. Analyze this food image.
-
-Identify all foods visible and respond with ONLY this JSON format, no other text:
+Identify all foods visible and respond with ONLY valid JSON, no other text:
 
 {
   "foods": [
@@ -66,15 +65,13 @@ Identify all foods visible and respond with ONLY this JSON format, no other text
 }
 
 Rules:
-- oxalate value must be one of: Low, Medium, High, Very High
+- oxalate must be one of: Low, Medium, High, Very High
 - status must be one of: safe, moderate, avoid
 - meal_risk must be one of: Low, Medium, High
 - overall_status must be one of: safe, moderate, avoid
 - Focus on calcium oxalate kidney stone prevention
 - Identify Indian foods specifically if present
 - Return ONLY valid JSON nothing else`;
-
-        console.log('Sending to Groq...');
 
         const response = await groq.chat.completions.create({
             model: 'meta-llama/llama-4-scout-17b-16e-instruct',
@@ -100,37 +97,32 @@ Rules:
         });
 
         let text = response.choices[0].message.content;
-        console.log('Groq raw response:', text);
+        console.log('Groq response:', text);
 
-        // Clean response
         text = text.replace(/```json/g, '').replace(/```/g, '').trim();
 
-        // Extract JSON
         const jsonStart = text.indexOf('{');
         const jsonEnd = text.lastIndexOf('}');
 
         if (jsonStart === -1 || jsonEnd === -1) {
-            throw new Error('No valid JSON found in response');
+            throw new Error('No valid JSON in response');
         }
 
         text = text.substring(jsonStart, jsonEnd + 1);
-        console.log('Cleaned JSON:', text);
-
         const analysis = JSON.parse(text);
-        console.log('Analysis successful!');
 
         res.json({ success: true, analysis: analysis });
 
     } catch (error) {
         console.error('Error:', error.message);
         res.status(500).json({
+            success: false,
             error: 'Failed to analyze food image',
             details: error.message
         });
     }
 });
 
-// Home Route
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });

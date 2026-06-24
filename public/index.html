@@ -10,7 +10,6 @@
 <body>
     <div class="app-container">
 
-        <!-- Header -->
         <header class="app-header">
             <div class="header-left">
                 <h1>💧 KidneyCare</h1>
@@ -18,27 +17,26 @@
             </div>
             <div class="header-right">
                 <span class="date-display" id="currentDate"></span>
-                <button class="btn-icon" id="settingsBtn" title="Settings">⚙️</button>
+                <button class="btn-icon" id="settingsBtn">⚙️</button>
             </div>
         </header>
 
-        <!-- Navigation Tabs -->
         <nav class="tab-nav">
             <button class="tab-btn active" data-tab="dashboard">📊 Dashboard</button>
-            <button class="tab-btn" data-tab="food">🍽️ Food Log</button>
+            <button class="tab-btn" data-tab="food">🍽️ Food</button>
             <button class="tab-btn" data-tab="water">💧 Water</button>
             <button class="tab-btn" data-tab="photo">📸 Photo</button>
             <button class="tab-btn" data-tab="guide">📋 Guide</button>
             <button class="tab-btn" data-tab="progress">📈 Progress</button>
         </nav>
 
-        <!-- DASHBOARD TAB -->
+        <!-- DASHBOARD -->
         <section class="tab-content active" id="dashboard">
             <div class="dashboard-grid">
-                <div class="card water-status-card">
+                <div class="card">
                     <h3>💧 Today's Water Intake</h3>
                     <div class="water-circle-container">
-                        <div class="water-circle" id="waterCircle">
+                        <div class="water-circle">
                             <svg viewBox="0 0 200 200">
                                 <circle cx="100" cy="100" r="90" class="circle-bg"/>
                                 <circle cx="100" cy="100" r="90" class="circle-progress" id="waterProgress"/>
@@ -52,10 +50,10 @@
                     <button class="btn btn-primary btn-quick-water" id="quickAddWater">+ Add 250ml Glass</button>
                 </div>
 
-                <div class="card risk-card">
+                <div class="card">
                     <h3>⚠️ Today's Risk Score</h3>
                     <div class="risk-meter">
-                        <div class="risk-bar" id="riskBar">
+                        <div class="risk-bar">
                             <div class="risk-fill" id="riskFill"></div>
                         </div>
                         <div class="risk-labels">
@@ -67,26 +65,26 @@
                     <p class="risk-text" id="riskText">Log your food to see risk analysis</p>
                 </div>
 
-                <div class="card food-summary-card">
+                <div class="card">
                     <h3>🍽️ Today's Food Summary</h3>
-                    <div id="dashFoodSummary" class="dash-food-summary">
+                    <div id="dashFoodSummary">
                         <p class="empty-state">No food logged today. Start tracking!</p>
                     </div>
                 </div>
 
-                <div class="card tips-card">
+                <div class="card">
                     <h3>💡 Daily Tip</h3>
                     <p id="dailyTip" class="daily-tip"></p>
                 </div>
 
-                <div class="card alerts-card" id="alertsCard" style="display:none;">
+                <div class="card" id="alertsCard" style="display:none;">
                     <h3>🚨 Alerts</h3>
                     <div id="alertsList"></div>
                 </div>
             </div>
         </section>
 
-        <!-- FOOD LOG TAB -->
+        <!-- FOOD LOG -->
         <section class="tab-content" id="food">
             <div class="card">
                 <h3>🔍 Search and Log Food</h3>
@@ -100,10 +98,10 @@
                 <h3>📝 Today's Food Log</h3>
                 <div class="food-log-filters">
                     <button class="filter-btn active" data-meal="all">All</button>
-                    <button class="filter-btn" data-meal="breakfast">🌅 Breakfast</button>
-                    <button class="filter-btn" data-meal="lunch">☀️ Lunch</button>
-                    <button class="filter-btn" data-meal="dinner">🌙 Dinner</button>
-                    <button class="filter-btn" data-meal="snack">🍪 Snack</button>
+                    <button class="filter-btn" data-meal="breakfast">Breakfast</button>
+                    <button class="filter-btn" data-meal="lunch">Lunch</button>
+                    <button class="filter-btn" data-meal="dinner">Dinner</button>
+                    <button class="filter-btn" data-meal="snack">Snack</button>
                 </div>
                 <div id="foodLogList" class="food-log-list">
                     <p class="empty-state">No food logged yet today</p>
@@ -111,7 +109,7 @@
             </div>
 
             <div class="card">
-                <h3>📊 Nutrient Impact Summary</h3>
+                <h3>📊 Nutrient Summary</h3>
                 <div class="nutrient-bars">
                     <div class="nutrient-item">
                         <label>Oxalate Intake</label>
@@ -119,7 +117,7 @@
                             <div class="progress-fill oxalate-fill" id="oxalateFill"></div>
                         </div>
                         <span id="oxalateValue">0 mg</span>
-                        <span class="nutrient-limit">/ 50 mg (recommended limit)</span>
+                        <span class="nutrient-limit">/ 50 mg limit</span>
                     </div>
                     <div class="nutrient-item">
                         <label>Sodium Intake</label>
@@ -127,7 +125,7 @@
                             <div class="progress-fill sodium-fill" id="sodiumFill"></div>
                         </div>
                         <span id="sodiumValue">0 mg</span>
-                        <span class="nutrient-limit">/ 2300 mg (recommended limit)</span>
+                        <span class="nutrient-limit">/ 2300 mg limit</span>
                     </div>
                     <div class="nutrient-item">
                         <label>Calcium Intake</label>
@@ -135,7 +133,7 @@
                             <div class="progress-fill calcium-fill" id="calciumFill"></div>
                         </div>
                         <span id="calciumValue">0 mg</span>
-                        <span class="nutrient-limit">/ 1000 mg (recommended)</span>
+                        <span class="nutrient-limit">/ 1000 mg recommended</span>
                     </div>
                     <div class="nutrient-item">
                         <label>Protein Intake</label>
@@ -143,13 +141,13 @@
                             <div class="progress-fill protein-fill" id="proteinFill"></div>
                         </div>
                         <span id="proteinValue">0 g</span>
-                        <span class="nutrient-limit">/ 56 g (moderate)</span>
+                        <span class="nutrient-limit">/ 56 g moderate</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- WATER TRACKER TAB -->
+        <!-- WATER -->
         <section class="tab-content" id="water">
             <div class="card">
                 <h3>💧 Water Intake Tracker</h3>
@@ -167,7 +165,7 @@
                     <div class="water-controls">
                         <p class="water-total">Total: <strong id="waterTotal">0 ml</strong></p>
                         <p class="water-target-text">Target: <strong id="waterTargetDisplay">3000 ml</strong></p>
-                        <p class="water-adjusted-note" id="waterAdjustedNote"></p>
+                        <p id="waterAdjustedNote" class="water-adjusted-note"></p>
                         <div class="water-buttons">
                             <button class="btn btn-water" data-amount="100">100ml</button>
                             <button class="btn btn-water" data-amount="200">200ml</button>
@@ -176,7 +174,7 @@
                             <button class="btn btn-water" data-amount="750">750ml</button>
                         </div>
                         <div class="custom-water">
-                            <input type="number" id="customWaterAmount" placeholder="Custom amount (ml)" min="1">
+                            <input type="number" id="customWaterAmount" placeholder="Custom ml" min="1">
                             <button class="btn btn-primary" id="addCustomWater">Add</button>
                         </div>
                         <button class="btn btn-danger" id="undoWater">Undo Last</button>
@@ -221,32 +219,38 @@
             </div>
         </section>
 
-        <!-- PHOTO ANALYZER TAB -->
+        <!-- PHOTO ANALYZER -->
         <section class="tab-content" id="photo">
             <div class="card">
                 <h3>📸 Food Photo Analyzer</h3>
-                <p class="guide-subtitle">Take a photo of your food and get instant kidney stone safety analysis!</p>
+                <p class="guide-subtitle">Upload a food photo to get instant kidney stone safety analysis!</p>
 
                 <div class="photo-upload-area" id="photoUploadArea">
                     <div class="upload-icon">📷</div>
-                    <p>Tap to take photo or upload from gallery</p>
-                    <input type="file" id="foodImageInput" accept="image/jpeg,image/png,image/gif,image/webp">
-                    <button class="btn btn-primary" id="uploadPhotoBtn">📸 Take / Upload Photo</button>
+                    <p>Click here to select a photo</p>
+                    <p style="font-size:0.75rem;color:#546E7A;">Supports JPG, PNG, WEBP</p>
                 </div>
 
-                <div class="photo-preview" id="photoPreview" style="display:none">
-                    <img id="previewImage" src="" alt="Food Preview">
+                <input type="file" 
+                    id="foodImageInput" 
+                    accept="image/*"
+                    style="display:block;width:100%;padding:12px;margin-top:12px;border:2px solid #2196F3;border-radius:10px;font-family:Poppins,sans-serif;background:#E3F2FD;cursor:pointer;">
+
+                <div id="photoPreview" style="display:none;margin-top:16px;text-align:center;">
+                    <img id="previewImage" src="" alt="Food Preview" 
+                         style="width:100%;max-height:300px;object-fit:cover;border-radius:12px;margin-bottom:12px;">
                     <button class="btn btn-danger" id="removePhoto">Remove Photo</button>
                 </div>
 
-                <button class="btn btn-primary btn-analyze" id="analyzeBtn" style="display:none">
+                <button class="btn btn-primary" id="analyzeBtn" 
+                        style="display:none;width:100%;padding:16px;margin-top:16px;font-size:1rem;">
                     🔍 Analyze This Food
                 </button>
 
-                <div class="analyzing-loader" id="analyzingLoader" style="display:none">
+                <div id="analyzingLoader" style="display:none;text-align:center;padding:30px;">
                     <div class="loader-spinner"></div>
                     <p>AI is analyzing your food...</p>
-                    <p class="loader-subtitle">Checking oxalate levels, sodium, and kidney safety...</p>
+                    <p style="font-size:0.8rem;color:#546E7A;">Checking oxalate levels and kidney safety...</p>
                 </div>
             </div>
 
@@ -257,25 +261,26 @@
 
             <div class="card" id="addAnalyzedFood" style="display:none">
                 <h3>📝 Add to Today's Log</h3>
-                <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
-                    <select id="photoMealSelect">
-                        <option value="breakfast">🌅 Breakfast</option>
-                        <option value="lunch">☀️ Lunch</option>
-                        <option value="dinner">🌙 Dinner</option>
-                        <option value="snack">🍪 Snack</option>
+                <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:12px;">
+                    <select id="photoMealSelect" 
+                            style="padding:10px;border:2px solid #E0E6ED;border-radius:10px;font-family:Poppins,sans-serif;">
+                        <option value="breakfast">Breakfast</option>
+                        <option value="lunch">Lunch</option>
+                        <option value="dinner">Dinner</option>
+                        <option value="snack">Snack</option>
                     </select>
                     <button class="btn btn-primary" id="addAnalyzedToLog">Add to Log</button>
                 </div>
             </div>
         </section>
 
-        <!-- FOOD GUIDE TAB -->
+        <!-- FOOD GUIDE -->
         <section class="tab-content" id="guide">
             <div class="card">
                 <h3>📋 Kidney Stone Food Guide</h3>
                 <p class="guide-subtitle">Based on your 6mm calcium oxalate stone history</p>
                 <div class="guide-filters">
-                    <button class="guide-filter-btn active" data-filter="all">All Foods</button>
+                    <button class="guide-filter-btn active" data-filter="all">All</button>
                     <button class="guide-filter-btn safe" data-filter="safe">Safe</button>
                     <button class="guide-filter-btn moderate" data-filter="moderate">Moderate</button>
                     <button class="guide-filter-btn avoid" data-filter="avoid">Avoid</button>
@@ -296,13 +301,11 @@
             </div>
         </section>
 
-        <!-- PROGRESS TAB -->
+        <!-- PROGRESS -->
         <section class="tab-content" id="progress">
             <div class="card">
                 <h3>📈 Weekly Progress</h3>
-                <div class="progress-chart">
-                    <div class="chart-container" id="weeklyChart"></div>
-                </div>
+                <div id="weeklyChart"></div>
             </div>
             <div class="card">
                 <h3>📊 Statistics</h3>
@@ -313,11 +316,11 @@
                     </div>
                     <div class="stat-item">
                         <span class="stat-number" id="avgWater">0</span>
-                        <span class="stat-label">Avg Water (ml)</span>
+                        <span class="stat-label">Avg Water ml</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-number" id="avgRisk">-</span>
-                        <span class="stat-label">Avg Risk Level</span>
+                        <span class="stat-label">Avg Risk</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-number" id="totalDaysTracked">0</span>
@@ -330,15 +333,15 @@
                 <div id="historyList" class="history-list"></div>
             </div>
             <div class="card">
-                <h3>💾 Data Management</h3>
-                <div class="data-management">
-                    <button class="btn btn-primary" id="exportData">📤 Export Data</button>
-                    <button class="btn btn-danger" id="clearAllData">🗑️ Clear All Data</button>
+                <h3>💾 Data</h3>
+                <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                    <button class="btn btn-primary" id="exportData">Export Data</button>
+                    <button class="btn btn-danger" id="clearAllData">Clear All Data</button>
                 </div>
             </div>
         </section>
 
-        <!-- Food Detail Modal -->
+        <!-- Food Modal -->
         <div class="modal" id="foodDetailModal">
             <div class="modal-content">
                 <div class="modal-header">
@@ -374,17 +377,16 @@
                         <label>Stone Type:</label>
                         <select id="stoneType">
                             <option value="calcium_oxalate" selected>Calcium Oxalate</option>
-                            <option value="calcium_phosphate">Calcium Phosphate</option>
                             <option value="uric_acid">Uric Acid</option>
                             <option value="struvite">Struvite</option>
                         </select>
                     </div>
                     <div class="setting-item">
-                        <label>Base Water Target (ml):</label>
+                        <label>Water Target (ml):</label>
                         <input type="number" id="baseWaterTarget" value="3000" min="2000" max="5000" step="100">
                     </div>
                     <div class="setting-item">
-                        <label>Your Weight (kg):</label>
+                        <label>Weight (kg):</label>
                         <input type="number" id="userWeight" value="70" min="30" max="200">
                     </div>
                     <button class="btn btn-primary" id="saveSettings">Save Settings</button>
@@ -392,9 +394,7 @@
             </div>
         </div>
 
-        <!-- Toast -->
         <div class="toast" id="toast"></div>
-
     </div>
 
     <script src="data/foodDatabase.js"></script>
