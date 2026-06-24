@@ -1123,3 +1123,241 @@ input:checked + .slider::before { transform: translateX(24px); }
     .modal-footer select,
     .modal-footer .btn { width: 100%; }
 }
+/* ====== Photo Analyzer ====== */
+.photo-upload-area {
+    border: 3px dashed var(--primary);
+    border-radius: var(--radius);
+    padding: 40px 20px;
+    text-align: center;
+    background: var(--primary-light);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.photo-upload-area:hover {
+    background: #90CAF9;
+}
+
+.upload-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+}
+
+.photo-upload-area p {
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    font-size: 0.9rem;
+}
+
+.btn-analyze {
+    width: 100%;
+    padding: 16px;
+    font-size: 1rem;
+    margin-top: 16px;
+    background: var(--primary-dark);
+}
+
+.photo-preview {
+    margin: 16px 0;
+    text-align: center;
+}
+
+.photo-preview img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+}
+
+/* Loader */
+.analyzing-loader {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.loader-spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid var(--primary-light);
+    border-top: 6px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loader-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 8px;
+}
+
+/* Analysis Results */
+.analysis-overall {
+    padding: 16px;
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.analysis-overall.safe {
+    background: var(--safe-light);
+    border: 2px solid var(--safe);
+}
+
+.analysis-overall.moderate {
+    background: var(--moderate-light);
+    border: 2px solid var(--moderate);
+}
+
+.analysis-overall.avoid {
+    background: var(--avoid-light);
+    border: 2px solid var(--avoid);
+}
+
+.analysis-overall h4 {
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+}
+
+.analysis-overall p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.food-analysis-item {
+    padding: 16px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 12px;
+    border-left: 4px solid;
+}
+
+.food-analysis-item.safe {
+    background: var(--safe-light);
+    border-color: var(--safe);
+}
+
+.food-analysis-item.moderate {
+    background: var(--moderate-light);
+    border-color: var(--moderate);
+}
+
+.food-analysis-item.avoid {
+    background: var(--avoid-light);
+    border-color: var(--avoid);
+}
+
+.food-analysis-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.food-analysis-nutrients {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.analysis-nutrient-badge {
+    background: white;
+    padding: 8px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.analysis-nutrient-badge .value {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.analysis-nutrient-badge .label {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+}
+
+.food-analysis-reason {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    margin: 8px 0;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+}
+
+.food-analysis-tip {
+    font-size: 0.85rem;
+    padding: 10px;
+    background: #E3F2FD;
+    border-radius: 8px;
+    border-left: 3px solid var(--primary);
+    margin-top: 8px;
+}
+
+.water-needed-badge {
+    display: inline-block;
+    padding: 8px 16px;
+    background: var(--primary);
+    color: white;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: 8px;
+}
+
+.total-water-card {
+    background: var(--primary);
+    color: white;
+    padding: 16px;
+    border-radius: var(--radius);
+    text-align: center;
+    margin-top: 16px;
+}
+
+.total-water-card h4 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+    opacity: 0.9;
+}
+
+.total-water-amount {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.total-water-card p {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    margin-top: 4px;
+}
+
+.meal-risk-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+}
+
+.meal-risk-badge.Low {
+    background: var(--safe-light);
+    color: var(--safe);
+}
+
+.meal-risk-badge.Medium {
+    background: var(--moderate-light);
+    color: var(--moderate);
+}
+
+.meal-risk-badge.High {
+    background: var(--avoid-light);
+    color: var(--avoid);
+}

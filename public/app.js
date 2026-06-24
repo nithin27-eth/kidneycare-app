@@ -18,8 +18,7 @@ let selectedFood = null;
 let reminderTimer = null;
 
 // ====== INITIALIZATION ======
-document.addEventListener('DOMContentLoaded', () => {
-    loadState();
+document.addEventListener('DOMContentLoaded', function() {    loadState();
     initTabs();
     initDashboard();
     initFoodSearch();
@@ -33,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     startAutoReminder();
     checkDayReset();
     setInterval(saveState, 30000);
+    initPhotoAnalyzer();
 });
 
 // ====== LOCAL STORAGE ======
@@ -1056,4 +1056,259 @@ function updateAll() {
     updateNutrientBars();
     updateWaterTracker();
     updateProgress();
+}
+// ====== PHOTO ANALYZER ======
+let analyzedFoodData = null;
+
+function initPhotoAnalyzer() {
+    const uploadBtn = document.getElementById('uploadPhotoBtn');
+    const fileInput = document.getElementById('foodImageInput');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const removePhoto = document.getElementById('removePhoto');
+    const photoUploadArea = document.getElementById('photoUploadArea');
+
+    // Click upload button
+    uploadBtn.addEventListener('click', function() {
+        fileInput.click();
+    });
+
+    // Click upload area
+    photoUploadArea.addEventListener('click', function() {
+        fileInput.click();
+    });
+
+    // File selected
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImage').src = e.target.result;
+                document.getElementById('photoPreview').style.display = 'block';
+                document.getElementById('photoUploadArea').style.display = 'none';
+                document.getElementById('analyzeBtn').style.display = 'block';
+                document.getElementById('analysisResults').style.display = 'none';
+                document.getElementById('addAnalyzedFood').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Remove photo
+    removePhoto.addEventListener('click', function() {
+        fileInput.value = '';
+        document.getElementById('previewImage').src = '';
+        document.getElementById('photoPreview').style.display = 'none';
+        document.getElementById('photoUploadArea').style.display = 'block';
+        document.getElementById('analyzeBtn').style.display = 'none';
+        document.getElementById('analysisResults').style.display = 'none';
+        document.getElementById('addAnalyzedFood').style.display = 'none';
+        analyzedFoodData = null;
+    });
+
+    // Analyze button
+    analyzeBtn.addEventListener('click', function() {
+        const file = fileInput.files[0];
+        if (file) {
+            analyzeFood(file);
+        }
+    });
+
+    // Add to log button
+    document.getElementById('addAnalyzedToLog').addEventListener('click', function() {
+        addAnalyzedFoodToLog();
+    });
+}
+
+async function analyzeFood(file) {
+    // Show loader
+    document.getElementById('analyzingLoader').style.display = 'block';
+    document.getElementById('analyzeBtn').style.display = 'none';
+    document.getElementById('analysisResults').style.display = 'none';
+    document.getElementById('addAnalyzedFood').style.display = 'none';
+
+    try {
+        // Create form data
+        const formData = new FormData();
+        formData.append('foodImage', file);
+
+        // Send to server
+        const response = await fetch('/analyze-food', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            analyzedFoodData = data.analysis;
+            displayAnalysisResults(data.analysis);
+        } else {
+            showToast('Error: ' + data.error);
+            document.getElementById('analyzeBtn').style.display = 'block';
+        }
+
+    } catch (error) {
+        console.error('Error:', error);
+        showToast('Failed to analyze food. Please try again.');
+        document.getElementById('analyzeBtn').style.display = 'block';
+    }
+
+    // Hide loader
+    document.getElementById('analyzingLoader').style.display = 'none';
+}
+
+function displayAnalysisResults(analysis) {
+    const container = document.getElementById('analysisContent');
+    const total = analysis.total_analysis;
+
+    // Overall status icon
+    const statusIcon = total.overall_status === 'safe' ? 'SAFE MEAL' :
+        total.overall_status === 'moderate' ? 'EAT IN MODERATION' : 'AVOID THIS MEAL';
+
+    // Risk badge
+    const riskColor = total.meal_risk === 'Low' ? 'safe' :
+        total.meal_risk === 'Medium' ? 'moderate' : 'avoid';
+
+    let html = '';
+
+    // Overall Analysis Card
+    html += '<div class="analysis-overall ' + total.overall_status + '">' +
+        '<h4>' + statusIcon + '</h4>' +
+        '<span class="meal-risk-badge ' + total.meal_risk + '">' +
+        total.meal_risk + ' Risk</span>' +
+        '<p>' + total.summary + '</p>' +
+        '</div>';
+
+    // Total Water Needed
+    html += '<div class="total-water-card">' +
+        '<h4>Extra Water Needed After This Meal</h4>' +
+        '<div class="total-water-amount">' + total.total_water_needed_ml + ' ml</div>' +
+        '<p>' + total.recommendation + '</p>' +
+        '</div>';
+
+    // Individual Foods
+    html += '<h4 style="margin: 16px 0 12px;">Individual Food Analysis:</h4>';
+
+    analysis.foods.forEach(function(food) {
+        const oxColor = food.oxalate === 'Very High' || food.oxalate === 'High' ?
+            '#F44336' : food.oxalate === 'Medium' ? '#FF9800' : '#4CAF50';
+
+        html += '<div class="food-analysis-item ' + food.status + '">' +
+
+            // Food name and quantity
+            '<div class="food-analysis-name">' + food.name + '</div>' +
+            '<div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:8px;">' +
+            'Portion: ' + food.quantity + '</div>' +
+
+            // Status badge
+            '<span class="status-badge ' + food.status + '">' +
+            (food.status === 'safe' ? 'SAFE' :
+            food.status === 'moderate' ? 'MODERATE' : 'AVOID') +
+            '</span>' +
+
+            // Nutrients
+            '<div class="food-analysis-nutrients">' +
+            '<div class="analysis-nutrient-badge">' +
+            '<span class="value" style="color:' + oxColor + '">' +
+            food.oxalate_mg + '</span>' +
+            '<span class="label">Oxalate (mg)</span>' +
+            '</div>' +
+            '<div class="analysis-nutrient-badge">' +
+            '<span class="value">' + food.sodium_mg + '</span>' +
+            '<span class="label">Sodium (mg)</span>' +
+            '</div>' +
+            '<div class="analysis-nutrient-badge">' +
+            '<span class="value">' + food.calcium_mg + '</span>' +
+            '<span class="label">Calcium (mg)</span>' +
+            '</div>' +
+            '<div class="analysis-nutrient-badge">' +
+            '<span class="value">' + food.protein_g + '</span>' +
+            '<span class="label">Protein (g)</span>' +
+            '</div>' +
+            '</div>' +
+
+            // Oxalate level
+            '<div style="margin:8px 0;">' +
+            '<strong>Oxalate Level:</strong> ' +
+            '<span style="color:' + oxColor + ';font-weight:600;">' +
+            food.oxalate + '</span>' +
+            '</div>' +
+
+            // Water needed
+            '<span class="water-needed-badge">' +
+            'Extra Water Needed: ' + food.water_needed_ml + ' ml' +
+            '</span>' +
+
+            // Reason
+            '<div class="food-analysis-reason">' +
+            '<strong>Why:</strong> ' + food.reason +
+            '</div>' +
+
+            // Tips
+            '<div class="food-analysis-tip">' +
+            '<strong>Tip:</strong> ' + food.tips +
+            '</div>' +
+
+            '</div>';
+    });
+
+    container.innerHTML = html;
+
+    // Show results and add to log button
+    document.getElementById('analysisResults').style.display = 'block';
+    document.getElementById('addAnalyzedFood').style.display = 'block';
+
+    // Auto set meal time
+    const hour = new Date().getHours();
+    const mealSelect = document.getElementById('photoMealSelect');
+    if (hour < 11) mealSelect.value = 'breakfast';
+    else if (hour < 15) mealSelect.value = 'lunch';
+    else if (hour < 18) mealSelect.value = 'snack';
+    else mealSelect.value = 'dinner';
+
+    // Scroll to results
+    document.getElementById('analysisResults').scrollIntoView({
+        behavior: 'smooth'
+    });
+}
+
+function addAnalyzedFoodToLog() {
+    if (!analyzedFoodData) return;
+
+    const meal = document.getElementById('photoMealSelect').value;
+    const total = analyzedFoodData.total_analysis;
+
+    // Add each food to log
+    analyzedFoodData.foods.forEach(function(food) {
+        const entry = {
+            id: Date.now() + Math.random(),
+            name: food.name + ' (Photo)',
+            status: food.status,
+            meal: meal,
+            servings: 1,
+            oxalate: food.oxalate_mg,
+            sodium: food.sodium_mg,
+            calcium: food.calcium_mg,
+            protein: food.protein_g,
+            time: new Date().toLocaleTimeString('en-IN', {
+                hour: '2-digit',
+                minute: '2-digit'
+            })
+        };
+        state.foodLog.push(entry);
+    });
+
+    // Add extra water needed
+    if (total.total_water_needed_ml > 0) {
+        showToast('Added to log! Drink ' +
+            total.total_water_needed_ml +
+            'ml extra water for this meal!');
+    }
+
+    saveState();
+    adjustWaterTarget();
+    updateAll();
+
+    showToast('Food added to ' + meal + ' log!');
 }
