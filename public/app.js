@@ -704,6 +704,7 @@ function initPhotoAnalyzer() {
             document.getElementById('photoPreview').style.display = 'block';
             document.getElementById('photoUploadArea').style.display = 'none';
             document.getElementById('analyzeBtn').style.display = 'block';
+            document.getElementById('analyzeBtn').style.backgroundColor = '#1565C0';
             document.getElementById('analysisResults').style.display = 'none';
             document.getElementById('addAnalyzedFood').style.display = 'none';
             showToast('Photo ready! Click Analyze button.');
